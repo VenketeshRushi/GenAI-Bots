@@ -1,16 +1,22 @@
+interface Window {
+	dataLayer: any[];
+}
+
+declare var window: Window & typeof globalThis;
+
 (function () {
 	// Define the default Google Analytics Measurement ID
-	let measurementId = "G-sadNF4DN0asdasd";
+	let measurementId = "G-sqw34adNasaasdasdasdsdasd";
 
 	// Determine the Measurement ID based on the hostname
 	const hostname = window.location.hostname;
 
 	if (hostname.match(/\.?gitlab1s\.com$/i)) {
-		measurementId = "G-1F70ST6944";
+		measurementId = "G-1F7asdasv4wer0ST69wer44";
 	} else if (hostname.match(/\.?bitbucket1s\.org$/i)) {
-		measurementId = "G-SPWSR3V6YC";
+		measurementId = "G-1F7asdasv4wer0ST69wer44";
 	} else if (hostname.match(/\.?npmjs1s\.com$/i)) {
-		measurementId = "G-VF4VCXYFKV";
+		measurementId = "G-1F7asdasv4wer0ST69wer44";
 	}
 
 	// Initialize the dataLayer
