@@ -1,15 +1,14 @@
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import MainLoader from "@/components/Loading/MainLoader";
-import { Private, PrivateAdmin } from "./VerifyRoute";
-import Dashboard from "@/pages/Dashboard";
+import { Private, PrivateAdmin, PublicRoute } from "./VerifyRoute";
 // import ErrorBoundary from "./ErrorBoundary";
 
 // Lazy load pages
-
 const Home = lazy(() => import("../pages/Home"));
 const Login = lazy(() => import("../pages/Login"));
 const Signup = lazy(() => import("../pages/Signup"));
+const Dashboard = lazy(() => import("../pages/Dashboard"));
 const User = lazy(() => import("../pages/User"));
 const ChatBot = lazy(() => import("../pages/Bots/ChatBot"));
 const ImageGenerationBot = lazy(
@@ -53,8 +52,8 @@ export const Routing = () => {
 							path={route.path}
 							element={
 								route.isPublic ? (
-									route.element
-								) : route.isAdmin ? (
+									<PublicRoute>{route.element}</PublicRoute>
+								) : route?.isAdmin ? (
 									<PrivateAdmin>{route.element}</PrivateAdmin>
 								) : (
 									<Private>{route.element}</Private>

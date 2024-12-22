@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { CookieStorage } from "@/utils/storage";
 import axios from "axios";
+import { CookieStorage } from "@/utils/storage";
+import { useNavigate } from "react-router-dom";
 
 // Define the AuthState interface
 interface AuthState {
-	user: { _id: string; name: string; email: string } | null;
+	user: null;
 	token: string | "";
 	isAdmin: boolean;
 	loading: boolean;
@@ -13,9 +14,7 @@ interface AuthState {
 
 // Initial state for the auth slice
 const initialState: AuthState = {
-	user: CookieStorage.getItem("user")
-		? JSON.parse(CookieStorage.getItem("user")!)
-		: null,
+	user: CookieStorage.getItem("user") ? CookieStorage.getItem("user")! : null,
 	token: CookieStorage.getItem("token") || "",
 	isAdmin: false,
 	loading: false,
@@ -26,15 +25,28 @@ const initialState: AuthState = {
 export const loginUser = createAsyncThunk(
 	"auth/login",
 	async (
-		{ email, password }: { email: string; password: string },
+		{
+			email,
+			password,
+			navigate,
+		}: {
+			email: string;
+			password: string;
+			navigate: ReturnType<typeof useNavigate>;
+		},
 		{ rejectWithValue }
 	) => {
 		try {
-			const response = await axios.post("/api/auth/login", { email, password });
+			const response = await axios.post(
+				"http://localhost:8000/api/auth/login",
+				{ email, password }
+			);
+
 			const { user, token } = response.data;
 			// Save user and token in cookies for persistence
-			CookieStorage.setItem("user", JSON.stringify(user));
+			CookieStorage.setItem("user", user);
 			CookieStorage.setItem("token", token);
+			navigate("/dashboard");
 			return { user, token };
 		} catch (error) {
 			// Ensure the error is of type AxiosError
@@ -54,22 +66,33 @@ export const registerUser = createAsyncThunk(
 	"auth/register",
 	async (
 		{
-			username,
+			name,
 			email,
 			password,
-		}: { username: string; email: string; password: string },
+			navigate,
+		}: {
+			name: string;
+			email: string;
+			password: string;
+			navigate: ReturnType<typeof useNavigate>;
+		},
 		{ rejectWithValue }
 	) => {
 		try {
-			const response = await axios.post("/api/auth/register", {
-				username,
-				email,
-				password,
-			});
+			const response = await axios.post(
+				"http://localhost:8000/api/auth/register",
+				{
+					name,
+					email,
+					password,
+				}
+			);
+
 			const { user, token } = response.data;
 			// Save user and token in cookies for persistence
-			CookieStorage.setItem("user", JSON.stringify(user));
+			CookieStorage.setItem("user", user);
 			CookieStorage.setItem("token", token);
+			navigate("/dashboard");
 			return { user, token };
 		} catch (error: unknown) {
 			// Narrow down the error type to AxiosError
@@ -109,6 +132,7 @@ const authSlice = createSlice({
 				state.user = action.payload.user;
 				state.token = action.payload.token;
 				state.isAdmin = action.payload.user.isAdmin || false;
+				state.error = null;
 			})
 			.addCase(loginUser.rejected, (state, action) => {
 				state.loading = false;
@@ -119,10 +143,12 @@ const authSlice = createSlice({
 				state.error = null;
 			})
 			.addCase(registerUser.fulfilled, (state, action) => {
+				console.log("registerUser.fulfilled", action.payload);
 				state.loading = false;
 				state.user = action.payload.user;
 				state.token = action.payload.token;
 				state.isAdmin = action.payload.user.isAdmin || false;
+				state.error = null;
 			})
 			.addCase(registerUser.rejected, (state, action) => {
 				state.loading = false;

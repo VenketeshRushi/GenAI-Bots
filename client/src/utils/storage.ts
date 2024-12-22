@@ -9,15 +9,17 @@ type StorageValue = string | object | number | boolean | null;
 export const CookieStorage = {
 	setItem: (
 		key: string,
-		data: StorageValue,
-		expiresInDays: number = 7
+		data: StorageValue
+		// expiresInDays: number = 7
 	): void => {
+		console.log("CookieStorage.setItem", key, data);
 		const encodedData = btoa(JSON.stringify(data)); // Encode and stringify the data
-		Cookies.set(key, encodedData, {
-			sameSite: "none",
-			secure: false, // Set to true if using HTTPS
-			expires: expiresInDays,
-		});
+		Cookies.set(key, encodedData);
+		// Cookies.set(key, encodedData, {
+		// 	// sameSite: "none",
+		// 	// secure: false, // Set to true if using HTTPS
+		// 	// expires: expiresInDays,
+		// });
 	},
 
 	getItem: <T = StorageValue>(key: string): T | undefined => {
