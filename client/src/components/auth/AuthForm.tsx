@@ -208,15 +208,31 @@ export function AuthForm({ type, className, ...props }: AuthFormProps) {
 							<div className="text-center text-sm">
 								{type === "login" ? (
 									<>
-										Don&apos;t have an account?{" "}
-										<Link to="/signup" className="underline underline-offset-4">
+										Don't have an account?{" "}
+										<Link
+											to="/signup"
+											className="underline underline-offset-4"
+											onClick={() => {
+												setEmailError("");
+												setPasswordError("");
+												setConfirmPasswordError("");
+											}}
+										>
 											Sign up
 										</Link>
 									</>
 								) : (
 									<>
 										Already have an account?{" "}
-										<Link to="/login" className="underline underline-offset-4">
+										<Link
+											to="/login"
+											className="underline underline-offset-4"
+											onClick={() => {
+												setEmailError("");
+												setPasswordError("");
+												setConfirmPasswordError("");
+											}}
+										>
 											Login
 										</Link>
 									</>

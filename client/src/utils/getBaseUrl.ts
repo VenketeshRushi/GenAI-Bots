@@ -1,6 +1,6 @@
 const getBaseUrl = () =>
-	process.env.NODE_ENV === "development"
+	import.meta.env.VITE_PUBLIC_NODE_ENV === "development"
 		? "http://localhost:5173"
-		: process.env.DOMAIN;
+		: import.meta.env.VITE_PUBLIC_DOMAIN;
 
 export default getBaseUrl;

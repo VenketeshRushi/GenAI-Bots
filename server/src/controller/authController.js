@@ -10,14 +10,13 @@ const register = async (req, res) => {
 		// Check if the email already exists
 		const existingUser = await User.findOne({ email: email });
 		if (existingUser) {
-			return res.status(400).json({ message: "Email is already in use" });
+			return res.status(400).json({ message: "Email is already in use." });
 		}
 
-		// Hash the password
-		const hashedPassword = await bcrypt.hash(password, 10);
+		// we are already hashing the password in the User model before saving it check there
 
 		// Create the new user
-		const user = await User.create({ email, password: hashedPassword });
+		const user = await User.create({ email, password });
 
 		// Exclude sensitive information from response
 		user.password = undefined;
@@ -38,7 +37,7 @@ const register = async (req, res) => {
 		);
 		res
 			.status(201)
-			.json({ message: "User registered successfully", user, token });
+			.json({ message: "User registered successfully.", user, token });
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
@@ -53,12 +52,12 @@ const login = async (req, res) => {
 		const user = await User.findOne({ email: email });
 
 		if (!user) {
-			return res.status(401).json({ message: "Invalid email" });
+			return res.status(401).json({ message: "Invalid email." });
 		}
 
 		console.log(
 			"user*************",
-			JSON.stringify(user.null, 2),
+			JSON.stringify(user, null, 2),
 			email,
 			password
 		);
@@ -69,7 +68,7 @@ const login = async (req, res) => {
 		console.log("isPasswordValid*************", isPasswordValid);
 
 		if (!isPasswordValid) {
-			return res.status(401).json({ message: "Invalid password" });
+			return res.status(401).json({ message: "Invalid password." });
 		}
 
 		// Generate a JWT token
@@ -88,7 +87,7 @@ const login = async (req, res) => {
 			}
 		);
 
-		res.status(200).json({ message: "Login successful", user, token });
+		res.status(200).json({ message: "Login successful.", user, token });
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
