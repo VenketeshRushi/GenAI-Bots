@@ -103,6 +103,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+
+// Pending
 app.use("/api/upload", uploadRoutes);
 app.use("/api/chat", chatRoutes);
 

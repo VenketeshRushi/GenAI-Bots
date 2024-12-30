@@ -3,10 +3,43 @@ import axios from "axios";
 import { CookieStorage } from "@/utils/storage";
 import { useNavigate } from "react-router-dom";
 
+interface Membership {
+	activeMembership: boolean;
+	membershipType: string;
+	membershipPrice: number;
+	membershipExpiration: string;
+}
+
+// Define the structure for files grouped by type
+interface File {
+	id: string;
+	name: string;
+	downloadUrl: string;
+	size: number;
+}
+
+interface UserFiles {
+	pdf: File[];
+	csv: File[];
+	audio: File[];
+	video: File[];
+	[other: string]: File[]; // Optional to allow additional file types dynamically
+}
+
+// Define the structure for the user
+interface User {
+	id: string;
+	name: string;
+	email: string;
+	isAdmin: boolean;
+	files: UserFiles;
+	membership: Membership;
+}
+
 // Define the AuthState interface
 interface AuthState {
-	user: null;
-	token: string | "";
+	user: User | null;
+	token: string;
 	isAdmin: boolean;
 	loading: boolean;
 	error: string | null;
@@ -44,19 +77,17 @@ export const loginUser = createAsyncThunk(
 
 			const { user, token } = response.data;
 			// Save user and token in cookies for persistence
-			CookieStorage.setItem("user", user);
+			CookieStorage.setItem("user", JSON.stringify(user));
 			CookieStorage.setItem("token", token);
 			navigate("/dashboard");
 			return { user, token };
 		} catch (error) {
-			// Ensure the error is of type AxiosError
 			if (axios.isAxiosError(error)) {
-				const errorMessage =
-					error.response?.data?.message || "Login failed. Please try again.";
-				return rejectWithValue(errorMessage);
-			} else {
-				return rejectWithValue("An unexpected error occurred.");
+				return rejectWithValue(
+					error.response?.data?.message || "Login failed. Please try again."
+				);
 			}
+			return rejectWithValue("An unexpected error occurred.");
 		}
 	}
 );
@@ -90,20 +121,18 @@ export const registerUser = createAsyncThunk(
 
 			const { user, token } = response.data;
 			// Save user and token in cookies for persistence
-			CookieStorage.setItem("user", user);
+			CookieStorage.setItem("user", JSON.stringify(user));
 			CookieStorage.setItem("token", token);
 			navigate("/dashboard");
 			return { user, token };
-		} catch (error: unknown) {
-			// Narrow down the error type to AxiosError
+		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				return rejectWithValue(
 					error.response?.data?.message ||
 						"Registration failed. Please try again."
 				);
-			} else {
-				return rejectWithValue("An unexpected error occurred.");
 			}
+			return rejectWithValue("An unexpected error occurred.");
 		}
 	}
 );
@@ -143,7 +172,6 @@ const authSlice = createSlice({
 				state.error = null;
 			})
 			.addCase(registerUser.fulfilled, (state, action) => {
-				console.log("registerUser.fulfilled", action.payload);
 				state.loading = false;
 				state.user = action.payload.user;
 				state.token = action.payload.token;

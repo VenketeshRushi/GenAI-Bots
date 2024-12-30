@@ -5,7 +5,7 @@ function MainLoader() {
 	return (
 		<div className="flex items-center justify-center h-screen">
 			<Button disabled className="p-5">
-				<Loader2 className="animate-spin" />
+				<Loader2 className="animate-spin font-extrabold" />
 			</Button>
 		</div>
 	);
