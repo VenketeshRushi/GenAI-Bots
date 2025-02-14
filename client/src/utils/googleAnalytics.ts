@@ -6,17 +6,17 @@ declare var window: Window & typeof globalThis;
 
 (function () {
 	// Define the default Google Analytics Measurement ID
-	let measurementId = "G-sqw34adNasaasdasdasdsdasd";
+	let measurementId = "sd";
 
 	// Determine the Measurement ID based on the hostname
 	const hostname = window.location.hostname;
 
 	if (hostname.match(/\.?gitlab1s\.com$/i)) {
-		measurementId = "G-1F7asdasv4wer0ST69wer44";
+		measurementId = "69wer44";
 	} else if (hostname.match(/\.?bitbucket1s\.org$/i)) {
-		measurementId = "G-1F7asdasv4wer0ST69wer44";
+		measurementId = "ar44";
 	} else if (hostname.match(/\.?npmjs1s\.com$/i)) {
-		measurementId = "G-1F7asdasv4wer0ST69wer44";
+		measurementId = "dasv4r44";
 	}
 
 	// Initialize the dataLayer
